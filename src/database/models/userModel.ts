@@ -7,7 +7,11 @@ interface IUser extends Document {
   email: string;
   phone: string;
   password: string;
-  code: string;
+  code: {
+    token: string;
+    takenAt: Date;
+    expireAt: Date;
+  };
 }
 
 const userSchema: Schema<IUser> = new Schema(
@@ -27,7 +31,11 @@ const userSchema: Schema<IUser> = new Schema(
     },
     phone: String,
     password: String,
-    code: String,
+    code: {
+      token: String,
+      takenAt: Date,
+      expireAt: Date,
+    },
   },
   { timestamps: true }
 );
