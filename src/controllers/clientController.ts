@@ -1,10 +1,14 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import Client from "../database/models/clientModel";
 
 class ClientController {
   // register client
-  public async Register(req: Request, res: Response): Promise<void> {
+  public async Register(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { name, redirectUrl } = req.body;
 
@@ -34,8 +38,7 @@ class ClientController {
         .status(201)
         .json({ message: "Client registered successfully", secretCode });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 }

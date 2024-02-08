@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import User from "../database/models/userModel";
 import Client from "../database/models/clientModel";
@@ -11,7 +11,11 @@ const isExpired = (date: Date): boolean => {
 };
 class AuthController {
   //Register
-  public async Register(req: Request, res: Response): Promise<void> {
+  public async Register(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const {
         name,
@@ -68,13 +72,16 @@ class AuthController {
         .status(200)
         .json({ message: "User registered successfully", url, state });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 
   //Login
-  public async Login(req: Request, res: Response): Promise<void> {
+  public async Login(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { email, password, redirectUrl, client_id, state } = req.body;
 
@@ -96,8 +103,8 @@ class AuthController {
       }
 
       // check the password
-      const compeare = await comparePassword(password, user.password);
-      if (!compeare) {
+      const compare = await comparePassword(password, user.password);
+      if (!compare) {
         return res
           .status(401)
           .json({ error: "Email or password is incorect!" });
@@ -122,13 +129,16 @@ class AuthController {
         .status(200)
         .json({ message: "User loged In successfully", url, state });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 
   //Token
-  public async Token(req: Request, res: Response): Promise<void> {
+  public async Token(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { code, client_id, secret } = req.body;
 
@@ -167,13 +177,16 @@ class AuthController {
       // send success response
       res.status(200).json({ message: "User token", token });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 
   //Validate Client
-  public async Validate(req: Request, res: Response): Promise<void> {
+  public async Validate(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { redirectUrl, client_id } = req.query;
 
@@ -185,14 +198,13 @@ class AuthController {
 
       if (client.redirectUrl !== redirectUrl) {
         console.log(client.redirectUrl, redirectUrl);
-        return res.status(401).json({ error: "redirectUrl is incorect!" });
+        return res.status(401).json({ error: "redirectUrl is incorrect!" });
       }
 
       // send success response
       res.status(200).json({ message: "Client verification is done" });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Internal Server Error" });
+      next(error);
     }
   }
 }
