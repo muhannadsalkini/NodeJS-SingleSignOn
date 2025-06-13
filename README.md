@@ -1,6 +1,6 @@
 # NodeJS OAuth2 Single Sign-On Application
 
-This repository contains a Node.js-based simple single sign-on (SSO) application with OAuth2 authentication. This application enables users to authenticate with a single account through various providers.
+This repository contains a Node.js-based Single Sign-On (SSO) application using OAuth2 authentication. It allows users to authenticate with a single account via popular OAuth providers (e.g., Google, GitHub).
 
 ## Prerequisites
 Ensure that you have the following installed on your machine:
